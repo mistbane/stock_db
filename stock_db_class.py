@@ -2,6 +2,7 @@ import stock_db_lib as sdbl
 import db_update as dbu
 import stock_dataset_v0002 as sdbs
 import data_slice as ds
+import pathlib
 
 
 class Stock_Db(object):
@@ -22,7 +23,12 @@ class Stock_Db(object):
         return df
 
     def is_sym_exist(self, sym):
-        pass
+        '''
+        Return True if sym exists in Stock_database
+        '''
+        ext = 'parquet'  #todo find a way to do search for file name only and not ext or auto identify readable ext.
+        path = pathlib.Path("{}/{}.{}".format(self.path, sym, ext))
+        return path.is_file()
 
     def read_sym_list(self):
         pass

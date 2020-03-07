@@ -1,6 +1,8 @@
 import stock_db_lib as sdbl
 import db_update as dbu
 import stock_dataset_v0002 as sdbs
+import data_slice as ds
+
 
 class Stock_Db(object):
     def __init__(self, path = None):
@@ -9,13 +11,11 @@ class Stock_Db(object):
 
     def update_diff(self, sym):
         pass
+
     
     def update_whole(self, sym):
         df, rec= dbu.update_whole(sym ,self.path)
         return df, rec
-
-    def save(self, sym):
-        pass
 
     def read(self, sym):
         df = dbu.read_db_sym(sym, self.path)
@@ -28,25 +28,26 @@ class Stock_Db(object):
         pass
 
     
+    
+    def df(self, sym = 'SPY'):  #todo change this to read()
+        return self.db.data(sym)
+        # return self.db.db.data(sym)
 
-    def df(self, sym = 'SPY'):
-        return self.db.db.data(sym)
+    def slice(self, sym = 'SPY', begin=None, end= None):
+        df = self.df(sym)
+        adf = ds.slice(df, begin , end )
+        return adf
 
     def add_sym(self, sym):
         pass
 
 
-db = Stock_Db()
-# print (db.df())
-print(db.db.location)
-# df, rec= dbu.update_whole('SPY',path= db.db.location)
-# print (df)
-# print(rec)
 
 
-# df = dbu.read_db_sym('SPY', db.db.location)
-# print(df)
 
-# db.update_whole('SPY')
-df = db.read('SPY')
-print(f"{df}\nFinish reading...")
+    def read_from_src(self, sym, reader = None):
+        df, rec =dbu.read_from_src(sym, reader)
+        return df, rec
+    
+    def save_to_disk(self, sym, df, path, file_ext= None): 
+        dbu.save_to_disk(sym, df, path, file_ext)

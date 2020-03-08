@@ -1,4 +1,4 @@
-import stock_db_class as sdc
+import stock_db.stock_db_class as sdc
 db = sdc.Stock_Db()
 df, rec =db.update_whole('SPY')
 print(rec)

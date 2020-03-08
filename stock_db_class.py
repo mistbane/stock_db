@@ -1,14 +1,14 @@
-import stock_db_lib as sdbl
-import db_update as dbu
+import stock_db.stock_db_lib as sdbl
+import stock_db.db_update as dbu
 import stock_dataset_v0002 as sdbs
-import data_slice as ds
+import stock_db.data_slice as ds
 import pathlib
 
 
 class Stock_Db(object):
     def __init__(self, path = None):
         self.path = sdbl.get_stock_db_path(path)
-        self.db = sdbs.Stock_Dataset(self.path)  #todo change to new.
+        # self.db = sdbs.Stock_Dataset(self.path)  #todo change to new.
 
     def update_diff(self, sym):
         pass
@@ -36,7 +36,8 @@ class Stock_Db(object):
     
     
     def df(self, sym = 'SPY'):  #todo change this to read()
-        return self.db.data(sym)
+        self.read(sym)
+        # return self.db.data(sym)
         # return self.db.db.data(sym)
 
     def slice(self, sym = 'SPY', begin=None, end= None):

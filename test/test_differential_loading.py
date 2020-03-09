@@ -17,3 +17,5 @@ adf,rec =dfl.differential_loading(sym, df,)
 # print(adf)
 print(f"Before update: totla {df_len}")
 print(f"After update: Total {len(adf.index)}")
+print(f"rec= {rec}") 
+# print(f"adf = {rec['SPY']['dataset']}") #  NOTE don't forget to use sym to access data.

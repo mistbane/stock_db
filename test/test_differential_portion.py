@@ -12,8 +12,8 @@ df = db.read(sym)
 df = df[0:-2]
 print(df)
 print(f"After reduce len ={len(df)}")
-end = dt.datetime.now().strftime('%Y-%m-%d')
-adf = dfl.df_differential_portion(sym, df, end)
+end_str = dt.datetime.now().strftime('%Y-%m-%d')
+adf = dfl.df_differential_portion(sym, df, end_str)
 print(adf)
 print(f"Total {len(adf)} rec. read")
 df= df.append(adf)
@@ -23,10 +23,11 @@ print('-'*20)
 df= df[:-3]
 print(df)
 df_len = len(df.index)
-adf =dfl.differential_loading(sym, df,)
+adf,rec =dfl.differential_loading(sym, df,)
 print(adf)
 print(f"Before update: totla {df_len}")
 print(f"After update: Total {len(adf.index)}")
+print(rec)
 # print(f"Rec. read: {len(adf)}")
 
 

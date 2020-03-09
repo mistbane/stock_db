@@ -2,14 +2,15 @@ import datetime
 import yfinance as yf
 import dj.datetime.us_working_day as uwb
 import stock_db.db_update as dbu
-def df_differential_portion(sym, adf, str_end):
+def df_differential_portion(sym, adf, end_str):
     '''
     Given a partial dataframe,  compare it with given range, load missing parts
     '''
     # end=datetime.now()
     data_end= adf.index[-1]
     data_end = data_end +datetime.timedelta(days =1)
-    str_end = uwb.get_us_bday(str_end).strftime("%Y-%m-%d")
+    print(f"test is {type(end_str)}")
+    str_end = uwb.get_us_bday(end_str).strftime("%Y-%m-%d")
     # print(f"str_end ={str_end}")
     
     # data_end= adf.Date[-1]
@@ -34,27 +35,20 @@ def differential_loading(sym, df= None, end= datetime.datetime.now()):
     '''
     if df is None:
         df= dbu.read_db_sym(sym)
-        # adf= adf.sort_index()
-    print(end)
-    print(df.index[-1])
-    # print(f"{end} < {adf.index[-1]}, is {end <= adf.index[-1]}")
+    
     end_str = end.strftime('%Y-%m-%d')
     adf=df_differential_portion(sym, df, end_str)
+    
     if len(adf.index) >0:
         df= df.append(adf)
         print(f"{sym} {len(adf.index)} rec. appened, Total: {len(df.index)} rec.")
-        # print(f"Rec. read: {len(adf)}")
-        # return df
-        # if end <= adf[-1].index:
-        # if not self.match_ticker_download_time(sym, adf):
         res={}
         record={}        
-        idf= self.df_differential_portion(sym, adf, end)
         res['symbol']=sym
-        res['portion_start']= datetime.date(idf.Date[0])
-        res['portion_end']= datetime.date(idf.Date[-1])
+        # res['portion_start']= adf.Date[0].date() # ??? do we need this?
+        # res['portion_end']= adf.Date[-1].date()
         res['action']='diff'
-        res['dataset']=idf
+        res['dataset']=adf
         record[sym]=res        
 
         #     fullpath= "{}/{}.{}".format(self.location, sym, self.file_ext)

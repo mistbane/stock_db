@@ -59,4 +59,6 @@ def read_db_sym( sym, path, file_ext=file_ext):
     df = pd.read_parquet(fullpath)
     df =df.sort_index()
     df.Volume= df.Volume.astype(float)
+    print(f"Retriving data from {fullpath}")
+    print(f"Total {len(df) } rec.")
     return df

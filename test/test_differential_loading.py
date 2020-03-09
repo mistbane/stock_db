@@ -5,18 +5,15 @@ import datetime as dt
 
 sym ='SPY'
 db = sdc.Stock_Db()
-df, rec =db.update_whole('SPY')
+# df, rec =db.update_whole('SPY')
 # print(rec)
 df = db.read(sym)
-# print(f"{df.tail()}\nFinish reading...")
-df = df[0:-2]
+df= df[:-4]
 print(df)
-print(f"After reduce len ={len(df)}")
-end = dt.datetime.now().strftime('%Y-%m-%d')
-adf = dfl.df_differential_portion(sym, df, end)
-print(adf)
-print(f"Total {len(adf)} rec. read")
-df= df.append(adf)
-print(df.tail(10))
 
-
+#----------------------------------------- test begin --------------
+df_len = len(df.index)
+adf,rec =dfl.differential_loading(sym, df,)
+# print(adf)
+print(f"Before update: totla {df_len}")
+print(f"After update: Total {len(adf.index)}")

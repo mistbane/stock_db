@@ -7,7 +7,7 @@ sym ='SPY'
 db = sdc.Stock_Db()
 # df, rec =db.update_whole('SPY')
 # print(rec)
-df = db.read(sym)
+df = db.from_db(sym)
 # print(f"{df.tail()}\nFinish reading...")
 df = df[0:-2]
 print(df)

@@ -10,16 +10,16 @@ class Stock_Db(object):
         self.path = sdbl.get_stock_db_path(path)
         # self.db = sdbs.Stock_Dataset(self.path)  #todo change to new.
 
-    def update_diff(self, sym):
-        pass
-
-    
-    def update_whole(self, sym):
-        df, rec= dbu.update_whole(sym ,self.path)
+    def from_src_to_db(self, sym):
+        df, rec= dbu.from_src_to_db(sym ,self.path)
         return df, rec
 
-    def read(self, sym):
-        df = dbu.read_db_sym(sym, self.path)
+    def from_db(self, sym):
+        df = dbu.from_db(sym, self.path)
+        return df
+
+    def df(self, sym = 'SPY'):  #todo change this to read()
+        df = dbu.from_db(sym, self.path)
         return df
 
     def is_sym_exist(self, sym):
@@ -33,28 +33,36 @@ class Stock_Db(object):
     def read_sym_list(self):
         pass
 
+    def read_batch(self, sym_list, path= None):
+        res={}
+        for item in sym_list:
+            # _, area =   # todo : a routine automatically decide to download full or differential. 
+            pass
     
+
     
-    def df(self, sym = 'SPY'):  #todo change this to read()
-        self.read(sym)
-        # return self.db.data(sym)
-        # return self.db.db.data(sym)
 
     def slice(self, sym = 'SPY', begin=None, end= None):
         df = self.df(sym)
         adf = ds.slice(df, begin , end )
         return adf
 
-    def add_sym(self, sym):
-        pass
-
-
-
-
-
-    def read_from_src(self, sym, reader = None):
-        df, rec =dbu.read_from_src(sym, reader)
+    def from_src(self, sym, reader = None):
+        """[ummary]
+            Read from data source and retreive df and relative info.
+            good with multiple retieve.
+        
+        Arguments:  
+            sym {[string]} -- [symbol the will be retrieved]
+        
+        Keyword Arguments:
+            reader {[DF_Reader]} -- [DF_Reader class that will handle reeading from all kind of source] (default: {None})
+        Returns:
+            [df] -- [pandas dataframe],
+            [rec] -- [a dictionary of result info, inclduing the df itself.]
+        """
+        df, rec =dbu.from_src(sym, reader)
         return df, rec
     
-    def save_to_disk(self, sym, df, path, file_ext= None): 
-        dbu.save_to_disk(sym, df, path, file_ext)
+    def to_db(self, sym, df, path, file_ext= None): 
+        dbu.to_db(sym, df, path, file_ext)

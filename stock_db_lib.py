@@ -1,9 +1,9 @@
-import stock_dataset_v0002 as sds
+# import stock_dataset_v0002 as sds
 import os
 
 def get_stock_db_path(location = None):
     if location is None:
-        location = 'D:\wsl-work\python\projects\stock_db\stock_data_json'
+        location = 'D:\wsl-work\python\projects\stock_db\stock_data'
     return location
 
 def clear_stock_data(path):

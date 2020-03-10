@@ -17,11 +17,11 @@ def renew(symbol_list, db):
     print(f"Reload dataset {symbol_list}")
     res=db.read_batch(*symbol_list)
 
-# import pandas as pd 
-# path = get_stock_db_path()
-# print(path)
-# db = sds.Stock_Dataset()
-
-# # clear_stock_data(path)
-# renew(['SPY'], db )
-# print (db.data('spy'))
+def get_db_sym_list(path, db_type):
+    ext = db_type
+    sym_list = []
+    for file in os.listdir(path):
+        if file.endswith(ext):
+            sym_list.append( file.strip(f'.{ext}') )
+            # print(os.path.join("/mydir", file))
+    return sym_list

@@ -39,11 +39,12 @@ def from_src(sym, reader=DF_Yahoo_reader):  #todo how does it read portion of da
 
 def to_db(sym, df, path, file_ext= file_ext): 
     fullpath= "{}/{}.{}".format(path, sym, file_ext)
-    print("Saving to {}".format(fullpath))
+    # print("Saving to {}".format(fullpath))
     # reader.df.to_json("{}".format(fullpath))
     # reader.df.to_parquet(f"{fullpath}", compression='None')
     df.to_parquet(f"{fullpath}", compression='gzip')
-    print(f"{len(df)} recrods writed")
+    # print(f"{len(df)} recrods writed")
+    return fullpath
 
 def from_src_to_db(sym, path, reader=DF_Yahoo_reader, file_ext=file_ext):
     '''
@@ -68,10 +69,7 @@ def from_db( sym, path, file_ext=file_ext):
     sym= sym.upper()
     # fullpath= "{}/{}.{}".format(self.location, ticker, self.file_ext)
     fullpath= r"{}\{}.{}".format(path, sym, file_ext)
-    # print(fullpath)
     df = pd.read_parquet(fullpath)
     df =df.sort_index()
     df.Volume= df.Volume.astype(float)
-    print(f"Retriving data from {fullpath}")
-    print(f"Total {len(df) } rec.")
     return df

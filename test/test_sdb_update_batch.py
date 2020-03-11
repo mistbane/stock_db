@@ -1,6 +1,6 @@
-import stock_db.stock_db_class as sdc
+import stock_db.sdb_class as sdc
 import stock_db.db_update as dbu
-import stock_db.stock_db_lib as dbl
+import stock_db.sdb_lib as dbl
 
 
 path =  dbl.get_stock_db_path()

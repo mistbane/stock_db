@@ -1,4 +1,4 @@
-import stock_db_class as dbc
+import sdb_class as dbc
 
 db = dbc.Stock_Db()
 df = db.df('spy')

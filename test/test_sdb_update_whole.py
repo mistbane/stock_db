@@ -1,4 +1,4 @@
-import stock_db.stock_db_class as sdc
+import stock_db.sdb_class as sdc
 db = sdc.Stock_Db()
 df, rec =db.from_src_to_db('SPY')
 print(rec)

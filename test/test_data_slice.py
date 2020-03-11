@@ -1,5 +1,5 @@
 import data_slice as ds
-import stock_db_class as sdc
+import sdb_class as sdc
 
 db = sdc.Stock_Db()
 df = db.df()

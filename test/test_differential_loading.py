@@ -1,5 +1,5 @@
 
-import stock_db.stock_db_class as sdc
+import stock_db.sdb_class as sdc
 import stock_db.differential_loading as dfl
 import datetime as dt
 

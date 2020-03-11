@@ -1,4 +1,4 @@
-import stock_db.stock_db_lib as sdbl
+import stock_db.sdb_lib as sdbl
 import stock_db.db_update as dbu
 # import stock_dataset_v0002 as sdbs
 import stock_db.data_slice as ds
@@ -106,3 +106,21 @@ class Stock_Db(object):
 
     def db_path(self, path=None):
         return sdbl.get_stock_db_path(path)
+    
+    def db_type(self, type_str):
+        return 'parquet'
+    
+    def clear_db(self, path= None, db_type= None):
+        path = self.db_path(path)
+        ext = self.db_type(db_type)
+        print(f"Deleteing Databasei: {path}")
+        sdbl.clear_db(path,path, ext)
+
+    def renew_db(self, sym_list, path = None, ext= None):
+        ext = self.db_type(ext)
+        path = self.db_path(path)
+        self.clear_db(path, )
+        self.update_batch(sym_list, path)
+        print(f"Reloaded dataset {sym_list}")
+
+

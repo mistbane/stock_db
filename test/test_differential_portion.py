@@ -1,5 +1,5 @@
 
-import stock_db.stock_db_class as sdc
+import stock_db.sdb_class as sdc
 import stock_db.differential_loading as dfl
 import datetime as dt
 
@@ -23,7 +23,7 @@ print('-'*20)
 df= df[:-3]
 print(df)
 df_len = len(df.index)
-adf,rec =dfl.differential_loading(sym, df,)
+adf,rec =dfl.differential_loading_to_db(sym, df,)
 print(adf)
 print(f"Before update: totla {df_len}")
 print(f"After update: Total {len(adf.index)}")

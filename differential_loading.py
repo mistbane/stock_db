@@ -2,7 +2,7 @@ import datetime
 import yfinance as yf
 import dj.datetime.us_working_day as uwb
 import stock_db.db_update as dbu
-import stock_db.stock_db_lib as sdbl
+import stock_db.sdb_lib as sdbl
 
 def df_differential_portion(sym, adf, end_str):
     '''

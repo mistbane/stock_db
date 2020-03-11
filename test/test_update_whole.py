@@ -1,5 +1,5 @@
 import db_update as dbu
-import stock_db_class as sdc
+import sdb_class as sdc
 
 db = sdc.Stock_Db()
 # print (db.df())

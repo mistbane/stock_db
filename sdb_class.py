@@ -43,10 +43,10 @@ class Stock_Db(object):
         sym_list = sdbl.get_db_sym_list(path, db_type)
         return sym_list
 
-    def differential_loading_to_db(self, sym, df= None, end_str= None):
+    def differential_loading_to_db(self, sym, df= None, end_str= None, shift =10):
         
         # ------------------------------------- DEBUG -----
-        df, rec = dfl.differential_loading_to_db(sym, df, end_str)
+        df, rec = dfl.differential_loading_to_db(sym, df, end_str, shift=shift)
         
         
         return df, rec
@@ -64,7 +64,7 @@ class Stock_Db(object):
             # _, area =  
         return res
 
-    def update_db(self, sym, path= None, reader=None): #BUG off by 1 in db.
+    def update_db(self, sym, path= None, reader=None, shift=10): 
         '''
         if sym not in stock dataset then loading it otherwise
         call differential_loading
@@ -78,7 +78,7 @@ class Stock_Db(object):
             df,ares= self.from_src_to_db(sym  )
         else:
             adf = self.df(sym)
-            df, ares=self.differential_loading_to_db(sym, df= adf)
+            df, ares=self.differential_loading_to_db(sym, df= adf, shift= shift)
         
         return df, ares
 

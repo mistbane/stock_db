@@ -6,7 +6,7 @@ import stock_db.differential_loading as dfl
 import pathlib
 import df_reader as dfr
 
-
+# TODO: Add an audit between two dfs, audit(df1, df2, start_index)
 class Stock_Db(object):
     def __init__(self, path = None):
         # self.path = sdbl.get_stock_db_path(path)
@@ -23,7 +23,7 @@ class Stock_Db(object):
         print(f"Read {sym} {len(df) } rec.\tPath: {self.path}")
         return df
 
-    def df(self, sym = 'SPY'):  #todo change this to read()
+    def df(self, sym = 'SPY'): 
         df =self.from_db(sym)
         return df
 
@@ -33,7 +33,7 @@ class Stock_Db(object):
         '''
         if db_type is None:
             db_type = 'parquet'
-        ext = db_type  #todo find a way to do search for file name only and not ext or auto identify readable ext.
+        ext = db_type  #todo find a way to do search for file name only and not ext or to auto identify readable ext.
         path = pathlib.Path("{}/{}.{}".format(self.path, sym, ext))
         return path.is_file()
 
@@ -56,10 +56,10 @@ class Stock_Db(object):
         for sym in sym_list:
             _, aRes = self.update_db(sym, path )
             res={**res, **aRes}
-            # _, area =   # todo : a routine automatically decide to download full or differential. 
+            # _, area =  
         return res
 
-    def update_db(self, sym, path= None, reader=None):
+    def update_db(self, sym, path= None, reader=None): #BUG off by 1 in db.
         '''
         if sym not in stock dataset then loading it otherwise
         call differential_loading

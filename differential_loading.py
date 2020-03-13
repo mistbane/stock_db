@@ -43,6 +43,7 @@ def differential_loading_to_db(sym, df= None, end= None, path= None, ext=None): 
     if ext is None:
         ext = 'parquet'
 
+    # df = df[:-1]  # Remove last record because last day data might be incorrect.
     df = df[:-2]  # Remove last record because last day data might be incorrect.
     end_str = end.strftime('%Y-%m-%d')
     adf=df_differential_portion(sym, df, end_str)

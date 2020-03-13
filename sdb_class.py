@@ -7,6 +7,7 @@ import pathlib
 import df_reader as dfr
 
 # TODO: Add an audit between two dfs, audit(df1, df2, start_index)
+# TODO  Add an autodetecting is data in db is too old, if so automatically update it.
 class Stock_Db(object):
     def __init__(self, path = None):
         # self.path = sdbl.get_stock_db_path(path)
@@ -43,7 +44,11 @@ class Stock_Db(object):
         return sym_list
 
     def differential_loading_to_db(self, sym, df= None, end_str= None):
+        
+        # ------------------------------------- DEBUG -----
         df, rec = dfl.differential_loading_to_db(sym, df, end_str)
+        
+        
         return df, rec
 
     def update_batch(self, sym_list, path= None):
@@ -122,5 +127,6 @@ class Stock_Db(object):
         self.clear_db(path, )
         self.update_batch(sym_list, path)
         print(f"Reloaded dataset {sym_list}")
+
 
 

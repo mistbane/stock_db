@@ -10,18 +10,19 @@ def df_differential_portion(sym, adf, end_str):
     '''
     # end=datetime.now()
     data_end= adf.index[-1]
+    print(f"diff data_end ={data_end}")
     data_end = data_end +datetime.timedelta(days =1)
     str_end = uwb.get_us_bday(end_str).strftime("%Y-%m-%d")
-    # print(f"str_end ={str_end}")
     
-    # data_end= adf.Date[-1]
+    print(f"diff str_end = {str_end}")
 
-    # print (f"Updating {sym}: {data_end} - {str_end}")
     df=None
     start = data_end
     # print(f"Reading data from yahoo service")
     print(f"Retrieveng {sym} from {start} to {str_end} from Yahoo service")
+#     df = yf.download(sym, start=start, end=str_end)
     df = yf.download(sym, start=start, end=str_end)
+    print(f"diff df={df}")
     print(f"Retrieve {sym} {len(df)} rec. read")
     # print(df)
     df['Date']=df.index
@@ -30,23 +31,27 @@ def df_differential_portion(sym, adf, end_str):
 
 
 # todo convert time zone between -8 and +8 
-def differential_loading_to_db(sym, df= None, end= None, path= None, ext=None): # todo change ext to more flexible format.
+def differential_loading_to_db(sym, df= None, end= None, path= None, ext=None, ashift=10): # todo change ext to more flexible format.
     '''
     Loading differential portion of data and merge it into main database.
     '''
     if df is None:
         df= dbu.from_db(sym)
     if end is None:
-        end =datetime.datetime.now()
+        end =datetime.datetime.now()+datetime.timedelta(days=3)
     if path is None:
         path= sdbl.get_stock_db_path() 
     if ext is None:
         ext = 'parquet'
-
+    
+    shift = ashift # recrod that will be overwritten
+    
     # df = df[:-1]  # Remove last record because last day data might be incorrect.
-    df = df[:-2]  # Remove last record because last day data might be incorrect.
+    df = df[:-shift]  # Remove last record because last day data might be incorrect.
+    print(f"df = {df}")
     end_str = end.strftime('%Y-%m-%d')
     adf=df_differential_portion(sym, df, end_str)
+    print(adf.tail(3))
     
     if len(adf.index) >0:
         df= df.append(adf)

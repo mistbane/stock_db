@@ -36,7 +36,7 @@ def get_db_sym_list(path, db_type):
             # print(os.path.join("/mydir", file))
     return sym_list
 
-def gdf(symlist, path, force):
+def gdfs(symlist, path, force):
     symlist = to_list(symlist)
     res = {}
     for sym in symlist:
@@ -45,7 +45,7 @@ def gdf(symlist, path, force):
         res[sym]=df
     return res
 
-def _gdf(sym, path, force):
+def gdf(sym, path, force):
     update_db_flag = False
     df = dbu.from_db(sym, path)
     
@@ -67,6 +67,7 @@ def _gdf(sym, path, force):
     else:
         if force:     # if so , lookup force flag 
             update_db_flag = True
+        
     
     if update_db_flag :   # Update differential
         dfl.differential_loading_to_db(sym,df,  end= end_date)

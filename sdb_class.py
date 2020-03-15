@@ -20,21 +20,27 @@ class Stock_Db(object):
         # self.path = sdbl.get_stock_db_path(path)
         self.path = self.db_path(path) 
 
-    def from_src_to_db(self, sym):
+    def from_src_to_db(self, sym, path=None):
+        self.path = path
         df, rec= dbu.from_src_to_db(sym ,self.path)
         return df, rec
 
-    def from_db(self, sym):
+    def from_db(self, sym, path = None):
+        self.path = path 
         df = dbu.from_db(sym, self.path)
         # print(f"Retriving data from {fullpath}")
         # print(f"Retriving data from {self.path}")
         print(f"Read {sym} {len(df) } rec.\tPath: {self.path}")
         return df
 
-    def df(self, symlist = 'SPY', path= None, force=False): 
-        if path is None:
-            path = self.path
-        adf =sdbl.gdf(symlist, path, force= force)
+    def dfs(self, symlist, path = None, force= False):
+        self.path = path 
+        res = sdbl.gdfs(symlist, path, force)
+        return res
+
+    def df(self, sym = 'SPY', path= None, force=False): 
+        self.path = path 
+        adf =sdbl.gdf(sym, self.path, force= force)
         return adf
 
     def is_sym_exist(self, sym, db_type=None):
@@ -48,27 +54,26 @@ class Stock_Db(object):
         return path.is_file()
 
     def get_sym_list(self, path = None, db_type = "parquet"):
-        path = self.path
-        sym_list = sdbl.get_db_sym_list(path, db_type)
+        self.path = path 
+        sym_list = sdbl.get_db_sym_list(self.path, db_type)
         return sym_list
 
-    def differential_loading_to_db(self, sym, df= None, end_str= None, shift =10):
-        
+    def differential_loading_to_db(self, sym, df= None, end_str= None, path = None,  shift =10):
+        self.path = path 
         # ------------------------------------- DEBUG -----
-        df, rec = dfl.differential_loading_to_db(sym, df, end_str, shift=shift)
+        df, rec = dfl.differential_loading_to_db(sym, df, end_str, path= self.path, shift=shift)
         
         
         return df, rec
 
     def update_batch(self, sym_list, path= None):
-        if path is None:
-            path = sdbl.get_stock_db_path()
+        self.path = path 
         res={}
         if type(sym_list).__name__ == 'str':
             sym_list= sym_list.split(', ')
 
         for sym in sym_list:
-            _, aRes = self.update_db(sym, path )
+            _, aRes = self.update_db(sym, self.path )
             res={**res, **aRes}
             # _, area =  
         return res
@@ -78,16 +83,17 @@ class Stock_Db(object):
         if sym not in stock dataset then loading it otherwise
         call differential_loading
         '''
+        self.path = path 
 
         if reader is None:
             reader = dfr.DF_Yahoo_reader()
         sym=sym.upper()
         if not self.is_sym_exist(sym):
             print('Adding {} into dataset.'.format(sym))
-            df,ares= self.from_src_to_db(sym  )
+            df,ares= self.from_src_to_db(sym, path= self.path  )
         else:
             adf = self.df(sym)
-            df, ares=self.differential_loading_to_db(sym, df= adf, shift= shift)
+            df, ares=self.differential_loading_to_db(sym, df= adf, shift= shift, path = self.path)
         
         return df, ares
 
@@ -113,8 +119,9 @@ class Stock_Db(object):
         df, rec =dbu.from_src(sym, reader)
         return df, rec
     
-    def to_db(self, sym, df, path, file_ext= 'parquet'): 
-        fullpath = dbu.to_db(sym, df, path, file_ext)
+    def to_db(self, sym, df, path = None, file_ext= 'parquet'): 
+        self.path = path 
+        fullpath = dbu.to_db(sym, df, self.path, file_ext)
         # print("Saving to {}".format(fullpath))
         print(f"Write {sym} {len(df)}rec.\tPath: {fullpath}")
 
@@ -125,17 +132,27 @@ class Stock_Db(object):
         return 'parquet'
     
     def clear_db(self, path= None, db_type= None):
-        path = self.db_path(path)
+        self.path = path 
         ext = self.db_type(db_type)
         print(f"Deleteing Databasei: {path}")
-        sdbl.clear_db(path,path, ext)
+        sdbl.clear_db(path, self.path, ext)
 
     def renew_db(self, sym_list, path = None, ext= None):
         ext = self.db_type(ext)
-        path = self.db_path(path)
-        self.clear_db(path, )
-        self.update_batch(sym_list, path)
+        self.path = path 
+        self.clear_db(self.path, )
+        self.update_batch(sym_list, self.path)
         print(f"Reloaded dataset {sym_list}")
+
+    @property 
+    def path(self,):
+        return self._path
+    
+    @path.setter
+    def path(self, value):
+        if value is None:
+            value = self.db_path()
+        self._path = value
 
 
 

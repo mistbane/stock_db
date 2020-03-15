@@ -1,3 +1,11 @@
+# import sdb_lib as sdbl
+# import db_update as dbu
+# # import stock_dataset_v0002 as sdbs
+# import data_slice as ds
+# import differential_loading as dfl
+# import pathlib
+# import df_reader as dfr
+
 import stock_db.sdb_lib as sdbl
 import stock_db.db_update as dbu
 # import stock_dataset_v0002 as sdbs
@@ -5,7 +13,6 @@ import stock_db.data_slice as ds
 import stock_db.differential_loading as dfl
 import pathlib
 import df_reader as dfr
-
 # TODO: Add an audit between two dfs, audit(df1, df2, start_index)
 # TODO  Add an autodetecting is data in db is too old, if so automatically update it.
 class Stock_Db(object):
@@ -24,9 +31,11 @@ class Stock_Db(object):
         print(f"Read {sym} {len(df) } rec.\tPath: {self.path}")
         return df
 
-    def df(self, sym = 'SPY'): 
-        df =self.from_db(sym)
-        return df
+    def df(self, symlist = 'SPY', path= None, force=False): 
+        if path is None:
+            path = self.path
+        adf =sdbl.gdf(symlist, path, force= force)
+        return adf
 
     def is_sym_exist(self, sym, db_type=None):
         '''

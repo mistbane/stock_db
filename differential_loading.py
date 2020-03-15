@@ -8,18 +8,20 @@ def df_differential_portion(sym, adf, end_str):
     '''
     Given a partial dataframe,  compare it with given range, load missing parts
     '''
-    # end=datetime.now()
-    data_end= adf.index[-1]
-    data_end = data_end +datetime.timedelta(days =1)
-    str_end = uwb.get_us_bday(end_str).strftime("%Y-%m-%d")
     
-
+    data_begin= adf.index[-1]
+    # data_begin = data_begin +datetime.timedelta(days =1)
+    # print(f" diff data_begin= {data_begin}")
+    end_date_str = uwb.get_us_bday(end_str).strftime("%Y-%m-%d")
+    end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
+    end_date += datetime.timedelta(days=1)
+    end_date_str = datetime.datetime.strftime(end_date, "%Y-%m-%d")
     df=None
-    start = data_end
+    start = data_begin
     # print(f"Reading data from yahoo service")
-    print(f"Retrieveng {sym} from {start} to {str_end} from Yahoo service")
+    print(f"Retrieveng {sym} from {start} to {end_date_str} from Yahoo service")
 #     df = yf.download(sym, start=start, end=str_end)
-    df = yf.download(sym, start=start, end=str_end)
+    df = yf.download(sym, start=start, end=end_date_str)
     print(f"Retrieve {sym} {len(df)} rec. read")
     df['Date']=df.index
     df.Volume = df.Volume.astype(float)

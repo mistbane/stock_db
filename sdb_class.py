@@ -13,13 +13,59 @@ import stock_db.data_slice as ds
 import stock_db.differential_loading as dfl
 import pathlib
 import df_reader as dfr
-# TODO: Add an audit between two dfs, audit(df1, df2, start_index)
-# TODO  Add an autodetecting is data in db is too old, if so automatically update it.
+
 class Stock_Db(object):
+    """[Directory oriented file based (.parguet) stock data system]
+    
+    Property:
+        path: Where the stock db file reside, if set to None then default will be used.
+    
+    Method:
+    ---- Often use function ----
+        dfs: Reads symbol list (list or str) and return a dict of {"sym":{df}, "sym2":{df}...}
+        df: Check for last trading day from today , if db is older update the difference.
+
+    ---- Basic operation ----
+        from_src: Read a symbol from SRC.
+        to_db: Write a df to DB.
+        from_src_to_db:   Read from SRC ( default yfinance) and save it to DB
+        from_db:  Get data from DB
+
+    ---- Support Function ----
+        is_sym_exist: check if sym in DB
+        get_sym_list : Return a list of sym in DB.
+        differential_loading_to_db : check between df and end_str dates then update the shift days of data to DB.
+
+    ---- Maintainence Function ----
+        update_batch: Read a sym_list (str or list) if sym not exist then update from SRC otherwise update the difference.
+        update_db: Read a sym, if sym not exist then update from SRC otherwise update the difference.
+
+    ---- Utility Function ----
+        slice: Return a dataframe between start and end of given df.
+        clear_db: Delete all symbol files in DB
+        renew_db: Refresh every symbol in symlist from SRC to DB.
+
+    ---- Class default ----
+        db_path: Return default DB path.
+        db_type: Currently will return 'parguet' only.
+    """
+
     def __init__(self, path = None):
         # self.path = sdbl.get_stock_db_path(path)
         self.path = self.db_path(path) 
 
+    #-------------------------------------- Often use function ----
+    def dfs(self, symlist, path = None, force= False):
+        self.path = path 
+        res = sdbl.gdfs(symlist, path, force)
+        return res
+
+    def df(self, sym = 'SPY', path= None, force=False): 
+        self.path = path 
+        adf =sdbl.gdf(sym, self.path, force= force)
+        return adf
+
+    #-------------------------------------- Basic operation ----
     def from_src_to_db(self, sym, path=None):
         self.path = path
         df, rec= dbu.from_src_to_db(sym ,self.path)
@@ -33,15 +79,28 @@ class Stock_Db(object):
         print(f"Read {sym} {len(df) } rec.\tPath: {self.path}")
         return df
 
-    def dfs(self, symlist, path = None, force= False):
+    def from_src(self, sym, reader = None):
+        """[ummary]
+            Read from data source and retreive df and relative info.
+            good with multiple retieve.
+        
+        Arguments:  
+            sym {[string]} -- [symbol the will be retrieved]
+        
+        Keyword Arguments:
+            reader {[DF_Reader]} -- [DF_Reader class that will handle reeading from all kind of source] (default: {None})
+        Returns:
+            [df] -- [pandas dataframe],
+            [rec] -- [a dictionary of result info, inclduing the df itself.]
+        """
+        df, rec =dbu.from_src(sym, reader)
+        return df, rec
+    
+    def to_db(self, sym, df, path = None, file_ext= 'parquet'): 
         self.path = path 
-        res = sdbl.gdfs(symlist, path, force)
-        return res
-
-    def df(self, sym = 'SPY', path= None, force=False): 
-        self.path = path 
-        adf =sdbl.gdf(sym, self.path, force= force)
-        return adf
+        fullpath = dbu.to_db(sym, df, self.path, file_ext)
+        # print("Saving to {}".format(fullpath))
+        print(f"Write {sym} {len(df)}rec.\tPath: {fullpath}")
 
     def is_sym_exist(self, sym, db_type=None):
         '''
@@ -102,28 +161,6 @@ class Stock_Db(object):
         adf = ds.slice(df, begin , end )
         return adf
 
-    def from_src(self, sym, reader = None):
-        """[ummary]
-            Read from data source and retreive df and relative info.
-            good with multiple retieve.
-        
-        Arguments:  
-            sym {[string]} -- [symbol the will be retrieved]
-        
-        Keyword Arguments:
-            reader {[DF_Reader]} -- [DF_Reader class that will handle reeading from all kind of source] (default: {None})
-        Returns:
-            [df] -- [pandas dataframe],
-            [rec] -- [a dictionary of result info, inclduing the df itself.]
-        """
-        df, rec =dbu.from_src(sym, reader)
-        return df, rec
-    
-    def to_db(self, sym, df, path = None, file_ext= 'parquet'): 
-        self.path = path 
-        fullpath = dbu.to_db(sym, df, self.path, file_ext)
-        # print("Saving to {}".format(fullpath))
-        print(f"Write {sym} {len(df)}rec.\tPath: {fullpath}")
 
     def db_path(self, path=None):
         return sdbl.get_stock_db_path(path)

@@ -16,7 +16,6 @@ def df_differential_portion(sym, adf, end_str):
     end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
     end_date += datetime.timedelta(days=1)
     end_date_str = datetime.datetime.strftime(end_date, "%Y-%m-%d")
-    df=None
     start = data_begin
     # print(f"Reading data from yahoo service")
     print(f"Retrieveng {sym} from {start} to {end_date_str} from Yahoo service")

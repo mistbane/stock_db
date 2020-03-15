@@ -11,7 +11,6 @@ import stock_db.db_update as dbu
 # import stock_dataset_v0002 as sdbs
 import stock_db.data_slice as ds
 import stock_db.differential_loading as dfl
-import pathlib
 import df_reader as dfr
 
 class Stock_Db(object):
@@ -55,14 +54,14 @@ class Stock_Db(object):
         self.path = self.db_path(path) 
 
     #-------------------------------------- Often use function ----
-    def dfs(self, symlist, path = None, force= False):
+    def dfs(self, symlist, path = None, db_type = None, force= False):
         self.path = path 
-        res = sdbl.gdfs(symlist, path, force)
+        res = sdbl.gdfs(symlist, path, db_type, force)
         return res
 
-    def df(self, sym = 'SPY', path= None, force=False): 
-        self.path = path 
-        adf =sdbl.gdf(sym, self.path, force= force)
+    def df(self, sym = 'SPY', path= None, db_type= None, force=False): 
+        self.path = path
+        adf =sdbl.gdf(sym, self.path, db_type = db_type, force= force)
         return adf
 
     #-------------------------------------- Basic operation ----
@@ -102,15 +101,11 @@ class Stock_Db(object):
         # print("Saving to {}".format(fullpath))
         print(f"Write {sym} {len(df)}rec.\tPath: {fullpath}")
 
-    def is_sym_exist(self, sym, db_type=None):
+    def is_sym_exist(self, sym, db_type=None, path = None):
         '''
         Return True if sym exists in Stock_database
         '''
-        if db_type is None:
-            db_type = 'parquet'
-        ext = db_type  #todo find a way to do search for file name only and not ext or to auto identify readable ext.
-        path = pathlib.Path("{}/{}.{}".format(self.path, sym, ext))
-        return path.is_file()
+        sdbl.is_sym_exist(sym, db_type, self.path )
 
     def get_sym_list(self, path = None, db_type = "parquet"):
         self.path = path 
